@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.pastelle</groupId>
-	<artifactId>shop</artifactId>
+	<artifactId>pastelle-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Pastelle</name>
 	<description>Pastelle e-commerce app</description>
