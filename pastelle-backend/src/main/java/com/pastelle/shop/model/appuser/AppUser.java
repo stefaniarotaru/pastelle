@@ -28,16 +28,14 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
-        this.locked = locked;
-        this.enabled = enabled;
     }
 
     @Id
-    @SequenceGenerator(name = "student_sequence",
-                       sequenceName = "student_sequence",
+    @SequenceGenerator(name = "user_sequence",
+                       sequenceName = "user_sequence",
                        allocationSize = 1)
     @GeneratedValue( strategy = GenerationType.SEQUENCE,
-                     generator = "student_sequence")
+                     generator = "user_sequence")
     private Long id;
     private String firstName;
     private String lastName;
