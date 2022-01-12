@@ -20,6 +20,8 @@ const card = props.card;
             </div>
         </div>
     </div>
+
+    
     )
 }
 
