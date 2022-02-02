@@ -14,7 +14,7 @@ const CartDropdown = () => {
           class="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
-          stroke="pink"
+          stroke="#f9a8d4"
         >
           <path
             stroke-linecap="round"
