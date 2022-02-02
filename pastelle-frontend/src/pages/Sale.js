@@ -34,7 +34,7 @@ const Sale = () => {
                     <p className='mr-2 '>Color :</p>
 
                     <ColorFilter value={cards.color}
-                            handleFilter={(e) => { filterCards(e.target.value); console.log("clicked: " + e.target.value) }}/>
+                        handleFilter={(e) => { filterCards(e.target.value); console.log("clicked: " + e.target.value) }} />
                 </div>
 
                 <div className="md:flex md:flex-row">
@@ -64,8 +64,15 @@ const Sale = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                    {/* <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
                         {cards.map(card => <Card key={card.id} card={card} />)}
+                    </div> */}
+                    <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 mt-10">
+
+                        {/* {filteredCards.map(card => <Card key={card.id} card={card} />)} */}
+                        {filteredCards.length >= 1 ?
+                            filteredCards.map(card => <Card key={card.id} card={card} />) :
+                            <p className="text-3xl w-96 mt-40 text-pink-500">Couldn't find anything! :(</p>}
                     </div>
                 </div>
             </div>
