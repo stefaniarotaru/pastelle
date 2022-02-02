@@ -8,7 +8,7 @@ const Slider = () => {
         {
           image: "https://cdn.discordapp.com/attachments/730458730331897949/898205375214526504/Untitledcover1.jpg",
           caption: `<button class="button1">
-                    <a href="/menu">SHOP</a></button>`
+                    <a href="/sale">SHOP</a></button>`
         },
         {
           image: "https://cdn.discordapp.com/attachments/730458730331897949/896023544679522304/Desktop_-_2.jpg",
@@ -17,7 +17,7 @@ const Slider = () => {
         {
           image: "https://cdn.discordapp.com/attachments/730458730331897949/898205386237149264/Untitledcover3.jpg",
           caption: `<button class="button1">
-                          <a href="/menu">SHOP</a></button>`
+                          <a href="/accessories">SHOP</a></button>`
         }
       ];
 
