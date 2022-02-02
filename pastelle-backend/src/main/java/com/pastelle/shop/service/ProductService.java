@@ -16,11 +16,25 @@ public class ProductService {
 
     public List<Product> getProducts() {
         return productRepository.findAll();
-
     }
+
+    public List<Product> getProductsByCategory(String category) {
+        return productRepository.findByCategory(category);
+    }
+
+    public List<Product> getProductsBySubcategory(String subcategory) {
+        return  productRepository.findBySubcategory(subcategory);
+    }
+
+    public List<Product> getProductsOnSale() {
+        return productRepository.findBySale(true);
+    }
+
     public Product getProduct(int id) {
         return productRepository.findById(id).orElseThrow();
     }
+
+
 
     @Transactional
     public Product addProduct(Product product) {
