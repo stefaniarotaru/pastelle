@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
@@ -28,8 +29,25 @@ public class ProductController {
         return productService.getProduct(id);
     }
 
-    @PostMapping
-    public Product addProduct(@RequestBody Product product) {
+    @GetMapping("/category/{category}")
+    public List<Product> getProductsByCategory(@PathVariable String category) {
+        return productService.getProductsByCategory(category);
+    }
+
+    @GetMapping("/subcategory/{subcategory}")
+    public List<Product> getProductsBySubcategory(@PathVariable String subcategory) {
+        return productService.getProductsBySubcategory(subcategory);
+    }
+
+    @GetMapping("/sale")
+    public List<Product> getProductsOnSale() {
+        return productService.getProductsOnSale();
+    }
+
+    @PostMapping("/add-product")
+    public Product addProduct(@Valid @RequestBody Product product) {
         return productService.addProduct(product);
     }
+
+
 }

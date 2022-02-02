@@ -1,11 +1,12 @@
 package com.pastelle.shop.model;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Product {
     private String subcategory;
 
     @ElementCollection
-    @NotNull
+
     private List<Size> sizes;
 
     @Column
@@ -45,7 +46,10 @@ public class Product {
 
     @Column
     @NotNull
-    private double price;
+    private BigDecimal price;
+
+    @Column(name = "sale_price")
+    private BigDecimal salePrice;
 
     @Column
     @NotNull
