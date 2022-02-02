@@ -12,11 +12,14 @@ const card = props.card;
         </Link>
         <div className="p-5">
             <h3><Link to={`/product/${card.id}`}>{card.name}</Link></h3>
-            <h3 className="text-xl">{card.price}</h3>
+            <h3 className="text-green-500 text-xl">{card.salePrice}</h3>
+            <h3 className={`text-lg ${card.sale ? 'line-through' : ''}`}>${card.price}</h3>
+            
+            
             <div className="flex flex-row my-3">
-                <div className="bg-red-300 h-5 w-5 rounded-full shadow-md mr-2"></div>
+                {/* <div className="bg-red-300 h-5 w-5 rounded-full shadow-md mr-2"></div>
                 <div className="bg-green-300 h-5 w-5 rounded-full shadow-md mr-2"></div>
-                <div className="bg-white h-5 w-5 rounded-full shadow-md mr-2"></div>
+                <div className="bg-white h-5 w-5 rounded-full shadow-md mr-2"></div> */}
             </div>
         </div>
     </div>
