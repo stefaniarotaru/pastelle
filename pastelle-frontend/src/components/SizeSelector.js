@@ -6,10 +6,21 @@ const SizeSelector = (props) => {
 
 
     return (
-        <div className="size-selector">
-            <input type="radio" name="size" className="hidden" id="size-xs" />
-            <label for="size-xs" className="text-xs border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600">
-                {size}
+        <div className="size-selector bg-pink-200 rounded-lg hover:bg-pink-300">
+            <input type="radio" name="size" className="hidden" id="size" />
+            <label for="size"
+                className="text-xs 
+                   border-gray-200 
+                   rounded-sm 
+                   p-1 
+                   px-2
+                   flex 
+                   items-center 
+                   justify-center 
+                   cursor-pointer 
+                   shadow-sm 
+                   text-gray-600">
+                {size.displayName}
             </label>
 
         </div>
