@@ -1,10 +1,8 @@
 package com.pastelle.shop.controller;
 
 import com.pastelle.shop.model.Product;
-import com.pastelle.shop.repository.ProductRepository;
 import com.pastelle.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

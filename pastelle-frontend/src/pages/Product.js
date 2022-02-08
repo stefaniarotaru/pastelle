@@ -9,26 +9,30 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SizeSelector from '../components/SizeSelector';
+import { Carousel } from 'react-carousel-minimal';
+import { Redirect } from 'react-router-dom'
+
 
 
 const Product = () => {
 
-    // const[products, setProducts] = useAtom(PRODUCTS);
-    // console.log("product item: ", products[0].name);
     let { id } = useParams();
     const cardSource = "http://localhost:8080/product";
     const [card, setCard] = useState([]);
+    const [imageUrls, setImageUrls] = useState([])
     useEffect(() => {
         axios.get(cardSource + `/${id}`).then(res => {
             setCard(res.data)
             console.log(res.data)
+
+            setImageUrls(res.data.imageUrls.map(imageUrl => { return { image: imageUrl } }))
+        }).catch((resp) => {
+            console.log("AHDHJGJWSFH" + resp)
+            if (resp.status === 404) {
+                return <Redirect to='/' />
+            }
         })
     }, [])
-
-    console.log("ID: ", id);
-
-    // const product = products.filter(product => product.id == id)[0];
-    // console.log("result: ", product)
 
     return (
 
@@ -39,9 +43,38 @@ const Product = () => {
             <div className="container grid md:grid-cols-2 gap-6 ">
 
                 {/* image */}
-                <div className='md:ml-6 my-20'>
-                    <img className="w-full rounded-lg" src={card.url} />
+
+                <div className='relative'>
+                {card.percentage > 1 ?
+                    <div className='absolute bg-pink-100/60 h-16 w-40 rounded-r-lg mt-[7rem] ml-10 flex flex-row items-center z-10'>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-2" fill="none" viewBox="0 0 24 24" stroke="#f472b6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <p className='text-pink-400 font-bold ml-2 text-xl'>SALE -{card.percentage}%</p>
+                    </div> : ''}
+                    <div className='md:ml-10 my-20'>
+                        {imageUrls.length > 0 && <Carousel
+                            data={imageUrls}
+                            width="700px"
+                            height="700px"
+                            radius="10px"
+                            automatic={false}
+                            dots={imageUrls.length > 1}
+                            slideBackgroundColor="darkgrey"
+                            slideImageFit="cover"
+                            thumbnails={imageUrls.length > 1}
+                            thumbnailWidth="100px"
+                            style={{
+                                textAlign: "center",
+                                maxWidth: "800px",
+                                maxHeight: "800px"
+                            }}
+                        />
+                        }
+                    </div>
+
                 </div>
+
 
                 {/* product content */}
                 <div className='-mt-36 md:mt-6 mx-6'>
@@ -57,15 +90,14 @@ const Product = () => {
                         </p>
                     </div>
                     <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
-                        <p className="text-xl text-red-400 font-semibold">{card.salePrice}</p>
-                        {/* <p className="text-base text-gray-400 line-through">${card.price}</p> */}
-                        <p className={`text-lg ${card.sale ? 'line-through' : ''}`}>{card.price}</p>
+                    {!card.salePrice ? '' : <p className="text-3xl text-pink-400 font-semibold">${card.salePrice}</p>}
+                        <p className={`text-lg ${card.sale ? 'line-through' : ''}`}>${card.price}</p>
                     </div>
                     {/* size */}
                     <div className="pt-4">
                         <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">Size</h3>
-                        <div className="flex items-center gap-2">
-                            {card.sizes?.map(size => <SizeSelector size={size} />)}
+                        <div className="flex items-center gap-2 ">
+                            {card.sizes?.map(size => <SizeSelector size={size}/>)}
                         </div>
                     </div>
                     {/* cart */}

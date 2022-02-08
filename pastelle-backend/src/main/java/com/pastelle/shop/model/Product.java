@@ -24,9 +24,8 @@ public class Product {
     @NotNull
     private String name;
 
-    @Column
-    @NotNull
-    private String url;
+    @ElementCollection
+    private List<String> imageUrls;
 
     @Column
     @NotNull
@@ -37,8 +36,10 @@ public class Product {
     private String subcategory;
 
     @ElementCollection
-
     private List<Size> sizes;
+
+    @Column
+    private Integer percentage;
 
     @Column
     @NotNull
