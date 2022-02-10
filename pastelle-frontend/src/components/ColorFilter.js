@@ -3,7 +3,7 @@ import React from 'react';
 const ColorFilter = (props) => {
     return (
         <div className='flex flex-row'>
-            <button className="bg-gradient-to-r from-yellow-400 to-blue-500 via-pink-500 via-green-200 h-5 w-5 rounded border-none h-5 w-5 rounded-full shadow-md mr-2"
+            <button className="bg-gradient-to-r from-yellow-400 to-blue-400 via-pink-500 h-5 w-5 rounded border-none h-5 w-5 rounded-full shadow-md mr-2"
                 onClick={props.handleFilter}
                 value="multicolor"
                 title="Multicolor"></button>
