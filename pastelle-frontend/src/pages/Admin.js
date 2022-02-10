@@ -9,37 +9,9 @@ import ColorsCheck from "../components/ColorsCheck";
 import CategoryDropdown from "../components/CategoryDropdown";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from 'yup';
+import initialSizes from "../components/InitialSizes";
 
 const Admin = () => {
-
-    const initialSizes = [
-        {
-            displayName: "S", name: "S", available: false
-        },
-        {
-            displayName: "M", name: "M", available: false
-        },
-        {
-            displayName: "L", name: "L", available: false
-        },
-        {
-            displayName: "ONE SIZE", name: "ONE_SIZE", available: false
-        },
-        {
-            displayName: "36", name: "SIZE_36", available: false
-        },
-        {
-            displayName: "37", name: "SIZE_37", available: false
-        },
-        {
-            displayName: "38", name: "SIZE_38", available: false
-        },
-        {
-            displayName: "39", name: "SIZE_39", available: false
-        },
-    ];
-
-
 
     const url = "http://localhost:8080/product/add-product"
 
@@ -91,12 +63,20 @@ const Admin = () => {
     const getAvailableSizes = (sizes) => {
         return sizes.filter(s => s.available).map(s => s.name);
     }
+
+    const calculatePercent = (num, percentage) => {
+        return (num * (percentage / 100));
+    }
     
-        const calculatePercent = (num, percentage) => {
-            return num * (percentage / 100);
+        const truncateNumber = (num) => {
+            num = num.toString()
+            return num.slice(0, (num.indexOf(".")) + 3)
         }
-        const [percentage, setPercentage] = useState(1);
-        let calculateSale = calculatePercent(price, percentage);
+        
+    const [percentage, setPercentage] = useState(1);
+
+    let calculateSale = calculatePercent(price, percentage);
+    let finalSalePrice = truncateNumber(price - calculateSale);
 
     const addProduct = () => {
         const availableSizes = getAvailableSizes(sizes);
@@ -110,6 +90,7 @@ const Admin = () => {
             'subcategory': subcategory,
             'imageUrls': imageUrls,
             'percentage': percentage,
+            'salePrice': salePrice,
             'sizes': availableSizes
         })
             .then((res) => console.log(res.data))
@@ -194,7 +175,7 @@ const Admin = () => {
                                     <label for="option2">No</label>
                                 </div>
                             </div>
-                            
+
                             {/* <div className="text-pink-600 text-base mt-2">{errors.sale?.message}</div> */}
 
                             <div className="items-center mt-4">
@@ -206,7 +187,7 @@ const Admin = () => {
                                     onChange={(e) => { console.log(e.target.value); setPercentage(e.target.value); setSale(true) }} />
                                 <button type="button"
                                     className="bg-pink-300 hover:bg-pink-400 rounded-lg px-3 py-2 text-white ml-4"
-                                    onClick={() => { setSalePrice(price - calculatePercent(price, percentage)) }}>Calculate</button>
+                                    onClick={() => { setSalePrice(finalSalePrice); console.log("SalePrice: " + finalSalePrice) }}>Calculate</button>
 
                             </div>
                         </div>
