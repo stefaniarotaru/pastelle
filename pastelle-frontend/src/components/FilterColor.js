@@ -5,7 +5,7 @@ const FilterColor = ({ filterCards, colors }) => {
         <div>
             {colors.map((color, i) =>
                 <button key={i}
-                    className={`${color.colorCSS} h-5 w-5 rounded-full shadow-md mr-2`}
+                    className={`${color.colorCSS} h-5 w-5 rounded-full shadow-md mr-2 focus:ring focus:ring-pink-500`}
                     onClick={() => filterCards('color', color.colorCode)}
                     value={color.colorCode}
                     title={color.colorName} />)}
