@@ -1,8 +1,6 @@
 import React from 'react'
 
 const UserInput = (props) => {
-    // const placeholder = props.placeholder;
-    // const type = props.type;
     
     return (
         <input type={props.type}
