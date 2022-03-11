@@ -15,17 +15,24 @@ public class ProductSpecification implements Specification<Product> {
 
     @Override
     public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+        //check if the text can be casted to boolean
+        //if it is possible, then add the check to the query
+
+        Object value = criteria.getValue();
+        value = "true".equalsIgnoreCase(value.toString()) ? Boolean.TRUE :
+                "false".equalsIgnoreCase(value.toString()) ? Boolean.FALSE : value;
+
         switch (criteria.getOperation()) {
             case EQUALITY:
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+                return builder.equal(root.get(criteria.getKey()), value);
             case NEGATION:
-                return builder.notEqual(root.get(criteria.getKey()), criteria.getValue());
+                return builder.notEqual(root.get(criteria.getKey()), value);
             case GREATER_THAN:
-                return builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.greaterThan(root.get(criteria.getKey()), value.toString());
             case LESS_THAN:
-                return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.lessThan(root.get(criteria.getKey()), value.toString());
             case LIKE:
-                return builder.like(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.like(root.get(criteria.getKey()), value.toString());
             default:
                 return null;
         }
