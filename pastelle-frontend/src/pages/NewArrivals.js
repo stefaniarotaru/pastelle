@@ -1,12 +1,9 @@
 import React from 'react'
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 
 
 const NewArrivals = () => {
     return (
         <>
-        <Navbar/>
             <div className="absolute 
             -top-40 
             bottom-0 
@@ -19,7 +16,6 @@ const NewArrivals = () => {
             text-6xl">
                 Under Construction
             </div>
-            <Footer/>
         </>
     )
 }
