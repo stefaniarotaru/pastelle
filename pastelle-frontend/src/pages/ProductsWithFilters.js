@@ -6,33 +6,26 @@ import FilterColor from "../components/FilterColor";
 import FilterSubcategory from "../components/FilterSubcategory";
 import colors from "../components/Colors";
 import FilterTags from '../components/FilterTags';
-import FilterPrice from '../components/FilterPrice';
-import { useAtom } from 'jotai';
-import { PRICES } from '../Store';
-import FilterPrice2 from '../components/FilterPrice2';
+import PriceRangeFilter from '../components/priceSlider/PriceRangeFilter'
 
 
 const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
 
     const searchBaseUrl = `http://localhost:8080/product/products?search=${defaultFilter},`;
-
     const [filters, setFilters] = useState({});
-
     const [cards, setCards] = useState([]);
-
     const [priceRange, setPriceRange] = useState({});
 
-    // const [atomPrices, setAtomPrices] = useAtom(PRICES);
 
     const buildSearchUrl = (filters) => {
         let newSearchUrl = searchBaseUrl;
         for (const filterKey in filters) {
             if (filterKey === 'subcategory' || filterKey === 'color') {
                 newSearchUrl = newSearchUrl.concat(filterKey, ":", filters[filterKey], ",")
-            } else if (filterKey === 'price') {
-                newSearchUrl = newSearchUrl.concat(filterKey, "<", filters[filterKey[0]], ",", filterKey, ">", filters[filterKey[1]],)
             }
- 
+            if (filterKey === 'price') {
+                newSearchUrl = newSearchUrl.concat(filterKey, ">", filters[filterKey][0], ",", filterKey, "<", filters[filterKey][1], ",")
+            }
         }
         return newSearchUrl
     }
@@ -41,13 +34,6 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
         axios.get(searchBaseUrl).then(res => {
             setCards(res.data)
             showPrices(res.data)
-            // const prices = res.data.map(card => card.price)
-            // const minPrice = Math.min(...prices)
-            // const maxPrice = Math.max(...prices)
-
-            // setPriceRange({ min: minPrice, max: maxPrice })
-
-            // console.log("min, max, ", minPrice, maxPrice)
         })
     }, [searchBaseUrl])
 
@@ -55,8 +41,6 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
         const prices = cards.map(card => card.price)
         const minPrice = Math.min(...prices)
         const maxPrice = Math.max(...prices)
-        console.log("show prices: ", { min: minPrice, max: maxPrice })
-
         setPriceRange({ min: minPrice, max: maxPrice })
     }
 
@@ -67,8 +51,6 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
         setFilters(newFilters)
         axios.get(newSearchUrl).then(res => {
             setCards(res.data)
-            // showPrices(res.data)
-            console.log("url: ", newSearchUrl);
         })
     }
     const removeFilter = (key) => {
@@ -81,13 +63,15 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
 
         })
     }
-
+    PriceRangeFilter.defaultProps = {
+        min: priceRange.min,
+        max: priceRange.max,
+        step: 1
+    };
 
     return (
         <>
             <div className="my-20 container mx-auto p-5 ">
-
-
 
                 <div className="text-2xl my-5">
                     {title}
@@ -103,19 +87,16 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
                     <div className='ml-8 pt-6'>
                         {
                             priceRange?.min ?
-                                <FilterPrice min={priceRange.min} max={priceRange.max} filterCards={filterCards}/>
-                                // <FilterPrice2 min={priceRange.min} max={priceRange.max}/>
+                                <PriceRangeFilter filterCards={filterCards} />
                                 : ''
                         }
                     </div>
                 </div>
 
                 <div className="md:flex md:flex-row items-start">
-
                     <div className="mr-4 md:flex md:flex-col gap-y-6 w-80">
                         <div className="flex mx-6 md:flex-col gap-y-10 gap-x-10 my-6 flex-row flex-wrap w-[40rem] md:w-[8rem]">
                             <FilterSubcategory filterCards={filterCards} types={filterTypes} />
-
                         </div>
                     </div>
 
