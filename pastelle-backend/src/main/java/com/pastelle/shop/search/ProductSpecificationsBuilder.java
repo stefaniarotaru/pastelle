@@ -11,7 +11,7 @@ public class ProductSpecificationsBuilder {
     private final List<SearchCriteria> params;
 
     public ProductSpecificationsBuilder() {
-        params = new ArrayList<SearchCriteria>();
+        params = new ArrayList<>();
     }
 
     public ProductSpecificationsBuilder with(String orPredicate, String key, String operation, Object value) {

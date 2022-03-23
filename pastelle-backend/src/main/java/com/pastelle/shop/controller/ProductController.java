@@ -58,18 +58,23 @@ public class ProductController {
 
 
     @GetMapping("/products")
-//    @ResponseBody
     public List<Product> search(@RequestParam(value = "search") String search) {
         ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder();
         String operationSetExpression = Joiner.on("|")
                 .join(SearchOperation.SIMPLE_OPERATION_SET);
-        Pattern pattern = Pattern.compile("(\\p{Punct}?)(\\w+?)(" + operationSetExpression + ")(\\w+?),");
+        Pattern pattern = Pattern.compile("(\\p{Punct}?)(\\w+?)(" + operationSetExpression + ")([\\w.]+?),");
         Matcher matcher = pattern.matcher(search + ",");
         while (matcher.find()) {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
         }
         Specification<Product> spec = builder.build();
         return productRepository.findAll(spec);
+    }
+
+    @GetMapping(value = "/products/spec/adv")
+    @ResponseBody
+    public List<Product> findAllByAdvPredicate(@RequestParam(value = "search") String search) {
+        return productService.doAdvancedSearch(search);
     }
 
 }

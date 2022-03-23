@@ -3,7 +3,11 @@ package com.pastelle.shop.service;
 import com.pastelle.shop.exception.NotFoundException;
 import com.pastelle.shop.model.Product;
 import com.pastelle.shop.repository.ProductRepository;
+import com.pastelle.shop.search.CriteriaParser;
+import com.pastelle.shop.search.GenericSpecificationsBuilder;
+import com.pastelle.shop.search.ProductSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -48,4 +52,14 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public List<Product> doAdvancedSearch(String search) {
+        Specification<Product> spec = resolveSpecificationFromInfixExpr(search);
+        return productRepository.findAll(spec);
+    }
+
+    protected Specification<Product> resolveSpecificationFromInfixExpr(String searchParameters) {
+        CriteriaParser parser = new CriteriaParser();
+        GenericSpecificationsBuilder<Product> specBuilder = new GenericSpecificationsBuilder<>();
+        return specBuilder.build(parser.parse(searchParameters), ProductSpecification::new);
+    }
 }
