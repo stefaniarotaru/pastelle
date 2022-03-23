@@ -11,7 +11,7 @@ import PriceRangeFilter from '../components/priceSlider/PriceRangeFilter'
 
 const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
 
-    const searchBaseUrl = `http://localhost:8080/product/products?search=${defaultFilter},`;
+    const searchBaseUrl = `http://localhost:8080/product/products/spec/adv?search=${defaultFilter} `;
     const [filters, setFilters] = useState({});
     const [cards, setCards] = useState([]);
     const [priceRange, setPriceRange] = useState({});
@@ -21,10 +21,14 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
         let newSearchUrl = searchBaseUrl;
         for (const filterKey in filters) {
             if (filterKey === 'subcategory' || filterKey === 'color') {
-                newSearchUrl = newSearchUrl.concat(filterKey, ":", filters[filterKey], ",")
+                newSearchUrl = newSearchUrl.concat("AND ", filterKey, ":", filters[filterKey], " ")
             }
             if (filterKey === 'price') {
-                newSearchUrl = newSearchUrl.concat(filterKey, ">", filters[filterKey][0], ",", filterKey, "<", filters[filterKey][1], ",")
+                const min = filters[filterKey][0];
+                const max = filters[filterKey][1];
+                newSearchUrl = newSearchUrl.concat(
+                    "AND ( ( ( sale:false AND price>", min, " ) AND ( sale:false AND price<", max, " ) ) ",
+                    "OR ( ( sale:true AND salePrice>", min, " ) AND ( sale:true AND salePrice<", max, " ) ) ) ")
             }
         }
         return newSearchUrl
@@ -55,7 +59,7 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
     }
     const removeFilter = (key) => {
         let newFilters = filters;
-        newFilters[key] = '';
+        delete newFilters[key]
         let newSearchUrl = buildSearchUrl(newFilters)
         setFilters(newFilters)
         axios.get(newSearchUrl).then(res => {
