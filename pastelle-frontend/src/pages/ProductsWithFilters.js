@@ -27,8 +27,8 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
                 const min = filters[filterKey][0];
                 const max = filters[filterKey][1];
                 newSearchUrl = newSearchUrl.concat(
-                    "AND ( ( ( sale:false AND price>", min, " ) AND ( sale:false AND price<", max, " ) ) ",
-                    "OR ( ( sale:true AND salePrice>", min, " ) AND ( sale:true AND salePrice<", max, " ) ) ) ")
+                    "AND ( ( ( sale:false AND ( price>", min, " OR price:",min," ) ) AND ( sale:false AND ( price<", max, " OR price:",max," ) ) ) ",
+                    "OR ( ( sale:true AND ( salePrice>", min, " OR salePrice:",min," ) ) AND ( sale:true AND ( salePrice<", max, " OR salePrice:",max," ) ) ) ) ")
             }
         }
         return newSearchUrl
@@ -43,8 +43,9 @@ const ProductsWithFilters = ({ defaultFilter, filterTypes, title }) => {
 
     const showPrices = (cards) => {
         const prices = cards.map(card => card.price)
-        const minPrice = Math.min(...prices)
-        const maxPrice = Math.max(...prices)
+        const salePrices = cards.filter(card => !!card.salePrice).map(card => card.salePrice)
+        const minPrice = Math.min(...prices, ...salePrices)
+        const maxPrice = Math.max(...prices, ...salePrices)
         setPriceRange({ min: minPrice, max: maxPrice })
     }
 
