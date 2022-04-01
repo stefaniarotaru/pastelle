@@ -1,9 +1,30 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
 const Card = (props) => {
 
     const card = props.card;
+    const imageSource = `http://localhost:8080/product/image?path=${card.productImages[0]?.imagePath}`;
+
+    const [image, setImage] = useState("");
+
+    useEffect(() => {
+        if (card.productImages.length > 0) {
+            axios.get(imageSource).then(res => {
+                const mimeType = res.headers['content-type'];
+                console.log("res ", res)
+                const blob = new Blob([res.data], { type: mimeType });
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const img = reader.result;
+                    console.log("img: ", img);
+                    setImage(img);
+                }
+                reader.readAsDataURL(blob);
+            })
+        }
+    }, [])
 
     return (
         <div className="shadow-lg rounded-lg relative">
@@ -15,7 +36,12 @@ const Card = (props) => {
                         </svg>
                         <p className='text-pink-400 font-bold ml-2'>SALE -{card.percentage}%</p>
                     </div> : ''}
-                <img className="rounded-tl-lg rounded-tr-lg" src={card.imageUrls[0]} />
+                {image.length > 0 ?
+
+                    <img className="rounded-tl-lg rounded-tr-lg" src={image} />
+                    :
+                    <img className="rounded-tl-lg rounded-tr-lg" src={card.imageUrls[0]} />
+                }
 
             </Link>
             <div className="p-5">
