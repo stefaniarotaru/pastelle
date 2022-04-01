@@ -7,10 +7,14 @@ import CategoryDropdown from "../components/CategoryDropdown";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from 'yup';
 import initialSizes from "../components/InitialSizes";
+import ExtraImageURL from "../components/ExtraImageURL";
+import { Carousel } from "react-carousel-minimal";
 
 const Admin = () => {
 
-    const url = "http://localhost:8080/product/add-product"
+
+    const url = "http://localhost:8080/product/add-product";
+    const storageUrl = "http://localhost:8080/product/";
 
     const [name, setName] = useState("");
     const [category, setCategory] = useState("");
@@ -21,10 +25,32 @@ const Admin = () => {
     const [imageUrls, setImageUrls] = useState([]);
     const [salePrice, setSalePrice] = useState("");
     const [sizes, setSizes] = useState(initialSizes);
+    const [extraImgInputs, setExtraImgInputs] = useState([]);
+    const [file, setFile] = useState("");
 
-    const [amount, setAmount] = useState(1);
-    const loadMore = () => {
-        setAmount((prevAmount) => prevAmount + 1);
+    const uploadImage = (productId) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        axios.post(storageUrl + productId + '/images', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(setFile(""));
+    }
+
+
+    let data = [
+        {
+            image: imageUrls[0]
+        },
+        {
+            image: imageUrls[1]
+        }
+    ]
+
+    const addExtraImgInput = () => {
+        const extraInput = <ExtraImageURL index={extraImgInputs.length + 1} updateImage={updateImage} />;
+        setExtraImgInputs(extraImgInputs => [...extraImgInputs, extraInput])
     }
 
     const toggleSizeAvailability = (size) => {
@@ -82,7 +108,7 @@ const Admin = () => {
 
     const addProduct = () => {
         const availableSizes = getAvailableSizes(sizes);
-        console.log(imageUrls)
+        // console.log(imageUrls)
         axios.post(url, {
             'name': name,
             'category': category,
@@ -95,15 +121,17 @@ const Admin = () => {
             'salePrice': salePrice,
             'sizes': availableSizes
         })
-            .then((res) => console.log(res.data))
+            .then((res) => uploadImage(res.data.id))
     }
 
     const updateImage = (i, url) => {
         const newImageUrls = [...imageUrls];
         newImageUrls[i] = url;
-        console.log(newImageUrls)
         setImageUrls(newImageUrls)
+        // data = newImageUrls.map(imageUrl => { return { image: imageUrl } });
+        console.log(data);
     }
+
 
     return (
         <>
@@ -134,7 +162,7 @@ const Admin = () => {
                             Select color:
                         </p>
                         <ColorsCheck value={color}
-                            onChange={(e) => { console.log(e.target.value); setColor(e.target.value) }}
+                            onChange={(e) => setColor(e.target.value)}
                             name="chooseColor"
                             // {...register('chooseColor')}
                             className={` ${errors.chooseColor ? 'border-pink-600 border-2' : ''}`}
@@ -198,45 +226,48 @@ const Admin = () => {
 
                         {/* Images */}
                         <div className="flex lg:flex-row flex-col">
-                            <div className="flex flex-row items-center">
-                                <input placeholder="Image URL"
-                                    name="imageUrl"
-                                    key={0}
-                                    type="text" {...register('imageUrls')}
-                                    className={`w-60 h-10 rounded-md my-4 ${errors.imageUrls ? 'border-pink-600 border-2' : ''}`}
-                                    // value={imageUrls[0]}
-                                    onChange={(e) => updateImage(0, e.target.value)} />
+                            <div className="">
+                                <div>
+                                    <input placeholder="Image URL"
+                                        name="imageUrl"
+                                        key={0}
+                                        type="text" {...register('imageUrls')}
+                                        className={`w-60 h-10 rounded-md mt-4 mb-1 ${errors.imageUrls ? 'border-pink-600 border-2' : ''}`}
+                                        // value={imageUrls[0]}
+                                        onChange={(e) => updateImage(0, e.target.value)} />
 
-                                <div className="text-pink-600 text-base">{errors.imageUrls?.message}</div>
-                                <button className="bg-pink-300 p-1 rounded-lg text-white ml-2"
+                                    <div className="text-pink-600 text-base">{errors.imageUrls?.message}</div>
+
+                                    {extraImgInputs.map((extraImgInput, index) => <div key={index}>{extraImgInput}</div>)}
+                                </div>
+                                <button className="bg-pink-300 rounded-lg p-1 text-white text-[1.1rem] mt-2 h-10 w-60 hover:bg-pink-400"
                                     type="button"
-                                    onClick={() => loadMore}
-                                >+</button>
+                                    onClick={addExtraImgInput}>
+                                    <p className="ml-4 mb-1">Add more images </p>
+                                </button>
                             </div>
-
-
-
-                            {/* {imageUrls.length === 0 || imageUrls[0] === '' ? '' :
-                                <div className="flex flex-col gap-y-4 lg:ml-4 lg:-mt-11">
-                                    <input placeholder="Additional URL (Optional)"
-                                        name="extra_url1"
-                                        type="text"
-                                        className="w-60 rounded-md"
-                                        onChange={(e) => updateImage(1, e.target.value)} />
-
-                                    <input placeholder="Additional URL (Optional)"
-                                        name="extra_url1"
-                                        type="text"
-                                        className="w-60 rounded-md"
-                                        onChange={(e) => updateImage(2, e.target.value)} />
-
-                                    <input placeholder="Additional URL (Optional)"
-                                        name="extra_url1"
-                                        type="text"
-                                        className="w-60 rounded-md"
-                                        onChange={(e) => updateImage(3, e.target.value)} />
-                                </div>} */}
                         </div>
+
+                        {/* <input accept="image/*"
+                            type="file"
+                            onChange={(e) => { console.log("file: ", e.target.files[0]); setFile(e.target.files[0]) }}
+                        /> */}
+
+                        <div className="flex w-60 items-center justify-center bg-grey-lighter">
+                            <label className="w-60 flex flex-row items-center px-4 py-2 bg-white rounded-lg tracking-wide border border-blue cursor-pointer hover:bg-blue hover:text-pink-400">
+                                <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                </svg>
+                                <span class="ml-4">Upload an Image</span>
+                                <input accept="image/*"
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => { console.log("file: ", e.target.files[0]); setFile(e.target.files[0]) }} />
+                            </label>
+                        </div>
+                        {!file ? '' :
+                            <span>{file.name}</span>
+                        }
 
                         {/* Add button */}
                         <div className="flex gap-x-4">
@@ -264,8 +295,19 @@ const Admin = () => {
                         </svg>
                     </div>
 
+                    {/* {!file ? '' :
+                    <div className="w-[30rem] md:-ml-14">
+
+                        <img className="rounded-lg rounded-tr-lg" src={URL.createObjectURL(file)} />
+                    </div>
+
+                    } */}
 
                     {(name === '' && price === '' && (imageUrls.length === 0 || imageUrls[0] === '')) ?
+                   
+                    // {(name === '' && price === '' && file === '') ? 
+
+
                         <div className="ml-32 mt-10">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="#f9a8d4">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -274,7 +316,23 @@ const Admin = () => {
                         <div className="my-20 flex flex-col w-full">
                             <div className="shadow-lg rounded-lg bg-white w-80 md:ml-2 ml-6 md:-mt-6">
 
-                                <img className="rounded-tl-lg rounded-tr-lg" src={imageUrls[0]} />
+                                {/* <img className="rounded-t-lg rounded-tr-lg" src={URL.createObjectURL(file)} /> */}
+
+
+
+                                {imageUrls.length > 0 && <Carousel
+                                    data={data}
+                                    width="400px"
+                                    height="400px"
+                                    radius="10px"
+                                    automatic={false}
+                                    dots={imageUrls.length > 1}
+                                    slideBackgroundColor="darkgrey"
+                                    slideImageFit="cover"
+                                    thumbnails={imageUrls.length > 1}
+                                    thumbnailWidth="100px"
+                                />
+                                }
 
                                 <div className="p-5">
                                     <h3>{name}</h3>
