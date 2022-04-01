@@ -32,3 +32,14 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+cloud:
+  aws:
+    region:
+      static: eu-central-1
+    stack:
+      auto: false
+    bucket-name: pastelle
+    credentials:
+      access-key: ${AWS_accessKey}
+      secret-key: ${AWS_secretKey}
+      profile-name: stefaniarotaru

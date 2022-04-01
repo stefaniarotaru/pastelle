@@ -27,6 +27,9 @@ public class Product {
     @ElementCollection
     private List<String> imageUrls;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> productImages;
+
     @Column
     @NotNull
     private String category;
